@@ -27,6 +27,9 @@ class FBXExportTool(QDialog):
         self.export_folder = ""
         self.filename = "export"
 
+        # Nouveau: contrôle de la vérification des lightmaps (2 sets UV)
+        self.check_lightmaps_enabled = True
+
         self.setup_ui()
 
     def setup_ui(self):
@@ -49,6 +52,12 @@ class FBXExportTool(QDialog):
         poly_layout.addWidget(self.poly_spinbox)
         poly_layout.addStretch()
         params_layout.addLayout(poly_layout)
+
+        # Nouveau: case à cocher pour la vérification des lightmaps
+        self.lightmap_checkbox = QCheckBox("Vérifier lightmaps (2 sets UV)")
+        self.lightmap_checkbox.setChecked(True)
+        self.lightmap_checkbox.toggled.connect(self.on_lightmap_toggle)
+        params_layout.addWidget(self.lightmap_checkbox)
 
         folder_layout = QHBoxLayout()
         folder_layout.addWidget(QLabel("Dossier d'export:"))
@@ -87,20 +96,25 @@ class FBXExportTool(QDialog):
         layout.addWidget(self.results_text)
 
         buttons_layout = QHBoxLayout()
-	self.export_btn = QPushButton("Vérifier et Exporter")
-	self.export_btn.clicked.connect(self.verify_and_export)
-	self.export_btn.setEnabled(False)
+        self.export_btn = QPushButton("Vérifier et Exporter")
+        self.export_btn.clicked.connect(self.verify_and_export)
+        self.export_btn.setEnabled(False)
 
-	self.validate_btn = QPushButton("Juste Vérifier")
-	self.validate_btn.clicked.connect(self.validate_only)
+        self.validate_btn = QPushButton("Juste Vérifier")
+        self.validate_btn.clicked.connect(self.validate_only)
 
-	cancel_btn = QPushButton("Fermer")
-	cancel_btn.clicked.connect(self.close)
+        cancel_btn = QPushButton("Fermer")
+        cancel_btn.clicked.connect(self.close)
 
-	buttons_layout.addWidget(self.export_btn)
-	buttons_layout.addWidget(self.validate_btn)
-	buttons_layout.addWidget(cancel_btn)
-	layout.addLayout(buttons_layout)
+        buttons_layout.addWidget(self.export_btn)
+        buttons_layout.addWidget(self.validate_btn)
+        buttons_layout.addWidget(cancel_btn)
+        layout.addLayout(buttons_layout)
+
+    def on_lightmap_toggle(self, checked):
+        self.check_lightmaps_enabled = checked
+        # Optionnel: re-vérifier l'objet automatiquement si souhaité
+        # self.check_selected_mesh()
 
     def browse_folder(self):
         try:
@@ -116,26 +130,25 @@ class FBXExportTool(QDialog):
     def log_message(self, message):
         self.results_text.append(message)
 
-def validate_only(self):
-    selection = cmds.ls(selection=True, long=True)
-    if not selection:
-        self.log_message("❌ Aucun objet sélectionné")
-        return
+    def validate_only(self):
+        selection = cmds.ls(selection=True, long=True)
+        if not selection:
+            self.log_message("❌ Aucun objet sélectionné")
+            return
 
-    mesh = selection[0]
-    shapes = cmds.listRelatives(mesh, shapes=True)
-    if not shapes or cmds.nodeType(shapes[0]) != "mesh":
-        self.log_message("❌ L'objet sélectionné n'est pas un mesh")
-        return
+        mesh = selection[0]
+        shapes = cmds.listRelatives(mesh, shapes=True)
+        if not shapes or cmds.nodeType(shapes[0]) != "mesh":
+            self.log_message("❌ L'objet sélectionné n'est pas un mesh")
+            return
 
-    self.results_text.clear()
-    self.log_message("🔍 Vérification sur l'objet sélectionné…")
+        self.results_text.clear()
+        self.log_message("🔍 Vérification sur l'objet sélectionné…")
 
-    if self.check_mesh(mesh):
-        self.log_message("✅ Toutes les vérifications sont passées 👍")
-    else:
-        self.log_message("❌ Une ou plusieurs vérifications ont échoué")
-
+        if self.check_mesh(mesh):
+            self.log_message("✅ Toutes les vérifications sont passées 👍")
+        else:
+            self.log_message("❌ Une ou plusieurs vérifications ont échoué")
 
     def check_selected_mesh(self):
         selection = cmds.ls(selection=True, long=True)
@@ -155,18 +168,23 @@ def validate_only(self):
         uv_sets = cmds.polyUVSet(mesh, query=True, allUVSets=True)
         uv_count = len(uv_sets) if uv_sets else 0
 
+        required_uv_sets = 2 if self.check_lightmaps_enabled else 1
+
         info_text = f"""
         Mesh: {mesh.split('|')[-1]}
         Polygones: {poly_count}
         Vertices: {vertex_count}
-        Sets UV: {uv_count}
+        Sets UV: {uv_count} (requis: {required_uv_sets})
         """
 
         warnings = []
         if poly_count > self.poly_spinbox.value():
             warnings.append(f"⚠️ Trop de polygones ({poly_count} > {self.poly_spinbox.value()})")
-        if uv_count < 2:
-            warnings.append("⚠️ Pas assez de sets UV pour lightmaps")
+        if uv_count < required_uv_sets:
+            if required_uv_sets == 2:
+                warnings.append("⚠️ Pas assez de sets UV pour lightmaps (2 requis)")
+            else:
+                warnings.append("⚠️ Aucun set UV détecté (au moins 1 requis)")
 
         if warnings:
             info_text += "\n" + "\n".join(warnings)
@@ -204,10 +222,19 @@ def validate_only(self):
                 return False
 
             uv_sets = cmds.polyUVSet(mesh, query=True, allUVSets=True)
-            if len(uv_sets) >= 2:
-                self.log_message(f"✅ {len(uv_sets)} sets UV détectés (lightmaps OK)")
+            uv_count = len(uv_sets) if uv_sets else 0
+            required_uv_sets = 2 if self.check_lightmaps_enabled else 1
+
+            if uv_count >= required_uv_sets:
+                if required_uv_sets == 2:
+                    self.log_message(f"✅ {uv_count} sets UV détectés (lightmaps OK)")
+                else:
+                    self.log_message(f"✅ {uv_count} set(s) UV détecté(s) (exigence minimale 1 OK)")
             else:
-                self.log_message("⚠️ Pas assez de sets UV pour lightmaps (au moins 2 attendus)")
+                if required_uv_sets == 2:
+                    self.log_message("⚠️ Pas assez de sets UV pour lightmaps (au moins 2 attendus)")
+                else:
+                    self.log_message("⚠️ Pas de set UV détecté (au moins 1 attendu)")
                 return False
 
             return True
@@ -226,7 +253,7 @@ def validate_only(self):
             self.log_message("❌ Veuillez entrer un nom de fichier")
             return
 
-        selection = cmds.ls(selection=True, long=True)
+        selection = cmds.ls(selection=True, long=True, dag=True, shapes=False)
         if not selection:
             self.log_message("❌ Aucun objet sélectionné")
             return
