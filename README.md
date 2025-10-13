@@ -1,58 +1,44 @@
-# MYA FBX Export Tool
+# Maya FBX Export Tool — Installation Automatique
 
-## Description
-A tool for quickly and cleanly exporting meshes to FBX from Maya 2026 with polygon count and UV verification.
+Ce script installe automatiquement l'outil d'export FBX dans Maya, crée un bouton sur le shelf, ajoute le chemin nécessaire, et lance l'interface utilisateur, en un seul clic.
 
-## Files
-- **installer_fbx_tool.py**: installation script. Creates the button in the Maya shelf.
-- **maya_fbx_export_tool.py**: main tool script.
-- **README.md**: this file.
+---
+
+## Contenu
+
+- `installer_fbx_tool.py` — Script d'installation automatique  
+- `maya_fbx_export_tool.py` — Script principal de l'outil
+
+---
 
 ## Installation
 
-1. Copy **installer_fbx_tool.py** script to the Maya scripts folder:
-```
-C:/Users/<YourName>/OneDrive/Documents/maya/2026/scripts/
-```
-or
-```
-C:/Users/<YourName>/Documents/maya/2026/scripts/
-```
-2. Restart Maya.
-3. In Maya > Script Editor (Python) run:
-```
-import installer_fbx_tool
-installer_fbx_tool.install_fbx_export_tool()
-```
-4. Go find maya_fbx_export_tool.py
+1. Placez les deux fichiers (`installer_fbx_tool.py` et `maya_fbx_export_tool.py`) dans le même dossier.
 
-5. Close and restart Maya.
+2. Ouvrez Maya.
 
-6. In Maya > Script Editor (Python) run:
-```
-from importlib import reload
-import maya_fbx_export_tool
-reload(maya_fbx_export_tool)
-maya_fbx_export_tool.show_fbx_export_tool()
-```
-## Usage
+3. Glissez-déposez `installer_fbx_tool.py` dans la fenêtre Maya.
 
-- Click the **FBX Export** button in the `Custom` shelf.
-- Select a mesh, choose a folder and file name.
-- Choose the right settings to verify.
-- Run verifications and export.
+4. Le script copiera automatiquement le fichier principal dans le bon dossier scripts Maya pour votre version, créera le bouton shelf, et lancera l'outil automatiquement.
 
-## Reloading after script modification
+---
 
-Without restarting Maya:
-```python
-from importlib import reload
-import maya_fbx_export_tool
-reload(maya_fbx_export_tool)
-maya_fbx_export_tool.show_fbx_export_tool()
-```
+## Utilisation
 
-## Notes
+- Utilisez le bouton **FBX Export** dans le shelf Maya pour lancer l’outil.
 
-- On Windows with OneDrive, Maya points to `OneDrive/Documents` for `~/maya/2026/scripts`.
-- Verify that files have the `.py` extension and not a hidden `.txt`.
+- Pour mettre à jour, refaites la même installation.
+
+- Pour désinstaller, supprimez manuellement le fichier `maya_fbx_export_tool.py` du dossier scripts Maya et le bouton shelf dans Maya.
+
+---
+
+## Notes techniques
+
+- Le dossier scripts Maya est automatiquement détecté selon votre version Maya.
+
+- L'installation est silencieuse et nécessite uniquement un glisser-déposer du script `installer_fbx_tool.py`.
+
+- Aucun chemin manuel ou configuration n’est nécessaire.
+
+---
