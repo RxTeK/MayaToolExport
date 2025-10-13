@@ -1,44 +1,44 @@
-# Maya FBX Export Tool — Installation Automatique
+# Maya FBX Export Tool — Automatic Installation
 
-Ce script installe automatiquement l'outil d'export FBX dans Maya, crée un bouton sur le shelf, ajoute le chemin nécessaire, et lance l'interface utilisateur, en un seul clic.
+This script automatically installs the FBX export tool in Maya, creates a button on the shelf, adds the necessary path, and launches the user interface, all in one click.
 
 ---
 
-## Contenu
+## Contents
 
-- `installer_fbx_tool.py` — Script d'installation automatique  
-- `maya_fbx_export_tool.py` — Script principal de l'outil
+- `installer_fbx_tool.py` — Automatic installation script  
+- `maya_fbx_export_tool.py` — Main tool script
 
 ---
 
 ## Installation
 
-1. Placez les deux fichiers (`installer_fbx_tool.py` et `maya_fbx_export_tool.py`) dans le même dossier.
+1. Place both files (`installer_fbx_tool.py` and `maya_fbx_export_tool.py`) in the same folder.
 
-2. Ouvrez Maya.
+2. Open Maya.
 
-3. Glissez-déposez `installer_fbx_tool.py` dans la fenêtre Maya.
+3. Drag and drop `installer_fbx_tool.py` into the Maya window.
 
-4. Le script copiera automatiquement le fichier principal dans le bon dossier scripts Maya pour votre version, créera le bouton shelf, et lancera l'outil automatiquement.
-
----
-
-## Utilisation
-
-- Utilisez le bouton **FBX Export** dans le shelf Maya pour lancer l’outil.
-
-- Pour mettre à jour, refaites la même installation.
-
-- Pour désinstaller, supprimez manuellement le fichier `maya_fbx_export_tool.py` du dossier scripts Maya et le bouton shelf dans Maya.
+4. The script will automatically copy the main file to the correct Maya scripts folder for your version, create the shelf button, and launch the tool automatically.
 
 ---
 
-## Notes techniques
+## Usage
 
-- Le dossier scripts Maya est automatiquement détecté selon votre version Maya.
+- Use the **FBX Export** button in the Maya shelf to launch the tool.
 
-- L'installation est silencieuse et nécessite uniquement un glisser-déposer du script `installer_fbx_tool.py`.
+- To update, repeat the same installation process.
 
-- Aucun chemin manuel ou configuration n’est nécessaire.
+- To uninstall, manually delete the `maya_fbx_export_tool.py` file from the Maya scripts folder and the shelf button in Maya.
+
+---
+
+## Technical Notes
+
+- The Maya scripts folder is automatically detected according to your Maya version.
+
+- The installation is silent and only requires dragging and dropping the `installer_fbx_tool.py` script.
+
+- No manual path or configuration is necessary.
 
 ---
