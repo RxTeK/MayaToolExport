@@ -10,42 +10,39 @@ Un outil pour exporter rapidement et proprement des meshes en FBX depuis Maya 20
 
 ## Installation
 
-1. Copier installer_fbx_tool.py scripts dans le dossier scripts Maya :
-
+1. Copier **installer_fbx_tool.py** scripts dans le dossier scripts Maya :
 ```
 C:/Users/<VotreNom>/OneDrive/Documents/maya/2026/scripts/
+```
 ou
+```
 C:/Users/<VotreNom>/Documents/maya/2026/scripts/
-
 ```
 2. Redémarrer Maya.
 3. Dans Maya > Script Editor (Python) lancer :
-
 ```
 import installer_fbx_tool
 installer_fbx_tool.install_fbx_export_tool()
-
 ```
-3.5 Aller chercher maya_fbx_export_tool.py
+4. Aller chercher maya_fbx_export_tool.py
 
+5. Fermer et relancer Maya.
+
+6.  Dans Maya > Script Editor (Python) lancer :
 ```
-
-4. Fermer et relancer Maya.
-
-```python
 from importlib import reload
 import maya_fbx_export_tool
 reload(maya_fbx_export_tool)
 maya_fbx_export_tool.show_fbx_export_tool()
 ```
-
 ## Utilisation
 
 - Cliquer sur le bouton **FBX Export** dans le shelf `Custom`.
 - Sélectionner un mesh, choisir un dossier et un nom de fichier.
+- choisir les bon settings à vérifier.
 - Lancer les vérifications et exporter.
 
-## Rechargement après modification
+## Rechargement après modification du scripts
 
 Sans redémarrer Maya :
 ```python
