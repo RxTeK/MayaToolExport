@@ -1,0 +1,70 @@
+// Maya FBX Export Tool - Uninstaller
+// Instructions: Faites glisser ce fichier .mel dans le viewport Maya pour désinstaller l'outil
+
+global proc uninstallFBXExportTool() {
+    global string $gShelfTopLevel;
+    
+    string $userScriptDir = `internalVar -usd`;
+    string $scriptFile = $userScriptDir + "maya_fbx_advanced_tool.py";
+    
+    int $removed = 0;
+    
+    // 1. Supprimer le fichier Python
+    if (`filetest -f $scriptFile`) {
+        sysFile -delete $scriptFile;
+        print("✓ Script maya_fbx_advanced_tool.py supprimé\n");
+        $removed = 1;
+    } else {
+        print("⚠ Fichier maya_fbx_advanced_tool.py introuvable\n");
+    }
+    
+    // 2. Supprimer tous les boutons shelf "FBX Export"
+    string $shelves[] = `tabLayout -q -ca $gShelfTopLevel`;
+    int $buttonCount = 0;
+    
+    for ($shelf in $shelves) {
+        string $buttons[] = `shelfLayout -q -ca $shelf`;
+        
+        for ($button in $buttons) {
+            // Vérifier si c'est notre bouton
+            string $label = `shelfButton -q -label $button`;
+            string $command = `shelfButton -q -command $button`;
+            
+            if (`gmatch $label "*FBX*"` && `gmatch $command "*maya_fbx_advanced_tool*"`) {
+                deleteUI $button;
+                print("✓ Bouton shelf '" + $label + "' supprimé du shelf '" + $shelf + "'\n");
+                $buttonCount++;
+                $removed = 1;
+            }
+        }
+    }
+    
+    // 3. Message final
+    print("========================================\n");
+    if ($removed) {
+        print("Désinstallation terminée!\n");
+        print("- Script supprimé: " + ($scriptFile != "" ? "Oui" : "Non") + "\n");
+        print("- Boutons supprimés: " + $buttonCount + "\n");
+        print("========================================\n");
+        
+        confirmDialog 
+            -title "Désinstallation Réussie" 
+            -message ("FBX Export Tool désinstallé!\n\n" +
+                     "Script supprimé: Oui\n" +
+                     "Boutons shelf supprimés: " + $buttonCount) 
+            -button "OK" 
+            -defaultButton "OK";
+    } else {
+        print("Aucun élément à désinstaller trouvé.\n");
+        print("========================================\n");
+        
+        confirmDialog 
+            -title "Rien à désinstaller" 
+            -message "Aucune installation de FBX Export Tool détectée." 
+            -button "OK" 
+            -defaultButton "OK";
+    }
+}
+
+// Lancer la désinstallation
+uninstallFBXExportTool();

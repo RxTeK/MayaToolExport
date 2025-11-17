@@ -1,0 +1,68 @@
+// Maya FBX Export Tool - Drag & Drop Installer
+// Instructions: Faites glisser ce fichier .mel dans le viewport Maya
+
+global proc string getScriptPath() {
+    string $whatIsResult = `whatIs "getScriptPath"`;
+    string $fullPath = `match ".*: (.+)" $whatIsResult`;
+    $fullPath = `substitute ".*: " $fullPath ""`;
+    return $fullPath;
+}
+
+global proc installFBXExportTool() {
+    global string $gShelfTopLevel;
+    
+    // Obtenir le chemin du script
+    string $installerPath = getScriptPath();
+    string $installerDir = dirname($installerPath);
+    
+    // Chemin du fichier Python
+    string $sourcePy = $installerDir + "/maya_fbx_advanced_tool.py";
+    
+    // Dossier scripts Maya de l'utilisateur
+    string $userScriptDir = `internalVar -usd`;
+    string $destPy = $userScriptDir + "maya_fbx_advanced_tool.py";
+    
+    // Vérifier que le fichier Python existe
+    if (!`filetest -f $sourcePy`) {
+        error("Fichier maya_fbx_advanced_tool.py introuvable dans " + $installerDir);
+        return;
+    }
+    
+    // Copier le fichier Python
+    sysFile -copy $destPy $sourcePy;
+    print("✓ Script copié dans " + $userScriptDir + "\n");
+    
+    // Créer le bouton shelf
+    string $currentShelf = `tabLayout -query -selectTab $gShelfTopLevel`;
+    
+    string $command = "import maya_fbx_advanced_tool\nmaya_fbx_advanced_tool.show_fbx_export_tool()";
+    
+    shelfButton
+        -parent $currentShelf
+        -label "FBXExp"
+        -annotation "Maya FBX Export Tool Advanced - Vérifications automatiques (poly count, UVs, lightmaps)"
+        -image1 "out_USD_FBX.png"
+        -imageOverlayLabel "FBX"
+        -overlayLabelColor 0.9 0.9 0.9
+        -overlayLabelBackColor 0.0 0.4 0.8 0.7
+        -command $command
+        -sourceType "python"
+        -width 35
+        -height 35;
+    
+    print("✓ Bouton shelf créé!\n");
+    print("========================================\n");
+    print("Installation terminée avec succès!\n");
+    print("Le bouton 'FBX Export' est maintenant disponible sur votre shelf.\n");
+    print("========================================\n");
+    
+    // Message de confirmation
+    confirmDialog 
+        -title "Installation Réussie ✓" 
+        -message "FBX Export Tool installé avec succès!\n\nLe bouton 'FBX' a été ajouté à votre shelf actuel.\n\nCliquez dessus pour lancer l'outil d'export." 
+        -button "OK" 
+        -defaultButton "OK";
+}
+
+// Lancer l'installation
+installFBXExportTool();
