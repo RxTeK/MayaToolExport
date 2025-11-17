@@ -2,7 +2,6 @@
 
 ![Maya](https://img.shields.io/badge/Maya-2026+-37A5CC?logo=autodesk&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Mac%20%7C%20Linux-lightgrey)
 
 Outil d'export FBX professionnel pour Autodesk Maya avec **vérifications automatiques de qualité** avant export. Idéal pour les pipelines de production de jeux vidéo et les assets 3D optimisés.
@@ -117,12 +116,6 @@ Les contributions sont les bienvenues ! N'hésite pas à :
 - 🐛 Signaler des bugs via les [Issues](../../issues)
 - 💡 Proposer de nouvelles fonctionnalités
 - 🔧 Soumettre des Pull Requests
-
----
-
-## 📝 Licence
-
-Ce projet est sous licence **MIT** - voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
 ---
 
